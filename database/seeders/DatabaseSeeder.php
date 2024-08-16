@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Company;
+use App\Models\Employee;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -22,22 +23,10 @@ class DatabaseSeeder extends Seeder
             'password' => 'password'
         ]);
 
-        Company::create([
-            'name' => 'Company1',
-            'email' => 'company1@gmail.com',
-            'link' => 'https://husnirb.tech'
-        ]);
+        Company::factory(10)->create();
 
-        Company::create([
-            'name' => 'Company2',
-            'email' => 'company2@gmail.com',
-            'link' => 'https://husnirb.tech'
-        ]);
-
-        Company::create([
-            'name' => 'Company3',
-            'email' => 'company3@gmail.com',
-            'link' => 'https://husnirb.tech'
-        ]);
+        Company::factory(2)->create()->each(function ($company) {
+            Employee::factory(10)->create(['company_id' => $company->id]);
+        });
     }
 }
