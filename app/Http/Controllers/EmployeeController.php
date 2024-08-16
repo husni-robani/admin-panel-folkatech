@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
+use App\Mail\EmployeeAdded;
 use App\Models\Company;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class EmployeeController extends Controller
 {
@@ -37,7 +39,8 @@ class EmployeeController extends Controller
      */
     public function store(StoreEmployeeRequest $request)
     {
-        Employee::create($request->input());
+        $employee = Employee::create($request->input());
+        Mail::to('admin@folkatech.com')->send(new EmployeeAdded($employee));
         return redirect()->route('employees.index');
     }
 
