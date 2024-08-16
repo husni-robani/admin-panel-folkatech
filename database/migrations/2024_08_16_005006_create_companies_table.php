@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->string('logo_path')->nullable();
-            $table->string('link');
+            $table->string('link')->nullable();
         });
     }
 
