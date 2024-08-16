@@ -26,8 +26,8 @@ class UpdateCompanyRequest extends FormRequest
         $company_id = $this->route('company')->id;
         return [
             'name' => 'required|string|max:90|unique:companies,name,'. $company_id,
-            'email' => 'required|email|unique:companies,email,' . $company_id,
-            'website' => 'required',
+            'email' => 'nullable|email|unique:companies,email,' . $company_id,
+            'website' => 'nullable|string',
             'logo' => [
                 'nullable',
                 File::image()

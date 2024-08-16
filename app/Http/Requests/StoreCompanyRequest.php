@@ -25,10 +25,9 @@ class StoreCompanyRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:90|unique:companies',
-            'email' => 'required|email|unique:companies',
-            'website' => 'required',
+            'email' => 'nullable|email|unique:companies',
+            'website' => 'nullable|string',
             'logo' => [
-                'required',
                 File::image()
                 ->dimensions(Rule::dimensions()->minHeight(100)->minWidth(100))
             ]
