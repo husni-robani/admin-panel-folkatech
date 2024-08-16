@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompanyController;
@@ -20,6 +21,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
    Route::resource('companies', CompanyController::class)->except('show');
+   Route::resource('employees', EmployeeController::class)->except('show');
 });
 
 require __DIR__.'/auth.php';
