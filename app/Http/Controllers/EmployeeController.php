@@ -31,7 +31,7 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        return view('employee.create', ['company_names' => Company::select(['id', 'name'])->orderBy('created_at', 'desc')->get()]);
+        return view('employee.create', ['company_names' => Company::getCompanyNames()]);
     }
 
     /**
@@ -39,17 +39,9 @@ class EmployeeController extends Controller
      */
     public function store(StoreEmployeeRequest $request)
     {
-        $employee = Employee::create($request->input());
+        $employee = Employee::create($request->validated());
         Mail::to('admin@folkatech.com')->send(new EmployeeAdded($employee));
-        return redirect()->route('employees.index');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        return redirect()->route('employees.index')->with('message', 'Employee added successfully');
     }
 
     /**
@@ -57,11 +49,13 @@ class EmployeeController extends Controller
      */
     public function edit(string $id)
     {
+        $employee = Employee::with(['company' => function($query) {
+            $query->select(['id', 'name']);
+        }])->findOrFail($id);
+
         return view('employee.edit', [
-            'employee' => Employee::with(['company' => function($query) {
-                $query->select(['id', 'name']);
-            }])->findOrFail($id),
-            'company_names' => Company::select(['id', 'name'])->orderBy('created_at', 'desc')->get()
+            'employee' => $employee,
+            'company_names' => Company::getCompanyNames()
         ]);
     }
 
@@ -70,8 +64,8 @@ class EmployeeController extends Controller
      */
     public function update(UpdateEmployeeRequest $request, Employee $employee)
     {
-        $employee->update($request->input());
-        return redirect()->route('employees.index');
+        $employee->update($request->validated());
+        return redirect()->route('employees.index')->with('message', 'Employee updated successfully');
     }
 
     /**
@@ -81,6 +75,6 @@ class EmployeeController extends Controller
     {
         $employee = Employee::findOrFail($id);
         $employee->delete();
-        return redirect()->route('employees.index');
+        return back()->with('message', 'Employee deleted successfully');
     }
 }

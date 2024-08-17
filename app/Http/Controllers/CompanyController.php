@@ -33,24 +33,17 @@ class CompanyController extends Controller
     public function store(StoreCompanyRequest $request)
     {
 //        store logo
-        $logo_path = $request->file('logo')->store('company', 'public');
+        $logo_path = $request->hasFile('logo') ? $request->file('logo')->store('company', 'public') : null;
 
 //        store data to database
         Company::create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'link' => $request->get('website'),
+            'name' => $request->validated('name'),
+            'email' => $request->validated('email'),
+            'link' => $request->validated('website'),
             'logo_path' => $logo_path
         ]);
-        return redirect()->route('companies.index');
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        return redirect()->route('companies.index')->with('message', 'Company created successfully');
     }
 
     /**
@@ -66,20 +59,8 @@ class CompanyController extends Controller
      */
     public function update(UpdateCompanyRequest $request, Company $company)
     {
-//        if new logo is existed
-        if ($request->hasFile('logo')){
-            $new_logo_path = $request->file('logo')->store('company', 'public');
-            $company->logo_path = $new_logo_path;
-            $company->save();
-        }
-//        update company
-        $company->update([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'link' => $request->get('website')
-        ]);
-
-        return redirect()->route('companies.index');
+        $company->updateCompany($request);
+        return redirect()->route('companies.index')->with('message', 'Company updated successfully');
     }
 
     /**
